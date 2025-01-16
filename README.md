@@ -1,16 +1,8 @@
-# zed
+# zrm
 
-"zed" is a command line tool written in `Nim👑` that uses fzf (_Fuzzy Finder_) to allow the deletion of folders and files in a simple and efficient way.
+`zrm` is a command line tool written in __Nim__ that uses `fzf` (_Fuzzy Finder_) to allow the deletion of folders and files in a simple and efficient way.
 
-With "zed", you can browse through your files and directories using an interactive interface and select multiple items for deletion by simply pressing the __TAB__ key. This functionality makes deleting files and folders faster and more convenient than traditional methods.
-
-![Alt text](.ignore/preview.gif)
-
-## Installation
-
-```sh
-wget https://raw.githubusercontent.com/gabrielcapilla/zed/main/setup && sh setup
-```
+With `zrm`, you can browse through your files and directories using an interactive interface and select multiple items for deletion by simply pressing the __TAB__ key. This functionality makes deleting files and folders faster and more convenient than traditional methods.
 
 ## Build
 
@@ -21,25 +13,31 @@ wget https://raw.githubusercontent.com/gabrielcapilla/zed/main/setup && sh setup
 ### 2) Clone the repository
 
 ```sh
-git clone https://github.com/gabrielcapilla/zed.git
+git clone https://github.com/gabrielcapilla/zrm.git
 ```
 
-### 3) Change dir to `zed`
+### 3) Change dir to `zrm`
 
 ```sh
-cd zed
+cd zrm
 ```
 
 ### 4) Build program with `nimble`
 
 ```sh
-nimble build
+nimble --verbose -d:release --opt:speed build
 ```
 
-Use `-d:release` to generate faster code
+### 4 ) Install with `nimble`
 
 ```sh
-nimble -d:release build
+nimble install
 ```
 
-After that you will get a ready-made binary file in the root directory of the project.
+## Uninstall
+
+Uninstall `zrm` just typing
+
+```sh
+nimble uninstall zrm
+```
