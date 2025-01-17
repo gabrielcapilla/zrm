@@ -2,7 +2,7 @@ import std/[os, osproc, strutils, strformat]
 
 proc fzfSelection(currentDir: string): seq[string] =
   ## Selects items in the current directory using fzf.
-  const fzfCmd =
+  const FuzzyFinderCmd =
     "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
 
   # Traverse the directory and add items to the list.
@@ -11,7 +11,7 @@ proc fzfSelection(currentDir: string): seq[string] =
     items.add(path)
 
   # Run fzf with the list of items.
-  let (output, exitCode) = execCmdEx(fzfCmd, input = items.join("\n"))
+  let (output, exitCode) = execCmdEx(FuzzyFinderCmd, input = items.join("\n"))
 
   # Return the selected items if fzf was successful.
   if exitCode == 0:
