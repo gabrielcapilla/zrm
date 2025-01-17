@@ -15,9 +15,9 @@ proc fzfSelection(currentDir: string): seq[string] =
 
   # Return the selected items if fzf was successful.
   if exitCode == 0:
-    return output.strip().splitLines()
+    result = output.strip().splitLines()
   else:
-    return @[]
+    result = @[]
 
 proc deleteItems(items: seq[string]): (int, int) =
   ## Deletes the selected items and returns the number of successes and failures.
@@ -37,7 +37,7 @@ proc deleteItems(items: seq[string]): (int, int) =
       stdout.writeLine "Error deleting item: ", item
       failureCount += 1
 
-  return (successCount, failureCount)
+  result = (successCount, failureCount)
 
 proc main() =
   ## Main function of the zrm program.
