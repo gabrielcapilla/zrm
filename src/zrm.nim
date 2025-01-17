@@ -34,7 +34,7 @@ proc deleteItems(items: seq[string]): (int, int) =
         stdout.writeLine "File deleted: ", item
       successCount += 1
     except OSError:
-      stdout.writeLine "Error deleting item: ", item
+      stderr.writeLine "Error deleting item: ", item
       failureCount += 1
 
   result = (successCount, failureCount)
