@@ -1,4 +1,4 @@
-import os, osproc, strutils, strformat
+import std/[os, osproc, strutils, strformat]
 
 proc fzfSelection(currentDir: string): seq[string] =
   ## Selects items in the current directory using fzf.
