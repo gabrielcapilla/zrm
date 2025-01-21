@@ -2,7 +2,7 @@ import std/[os, osproc, strutils, strformat]
 
 proc fzfSelection(currentDir: string): seq[string] =
   ## Selects items in the current directory using fzf.
-  const FuzzyFinderCmd =
+  const FuzzyFinderCmd: string =
     "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
 
   # Traverse the directory and add items to the list.
@@ -19,10 +19,9 @@ proc fzfSelection(currentDir: string): seq[string] =
   else:
     result = @[]
 
-proc deleteItems(items: seq[string]): (int, int) =
+proc deleteItems(items: seq[string]): (uint8, uint8) =
   ## Deletes the selected items and returns the number of successes and failures.
-  var successCount = 0
-  var failureCount = 0
+  var successCount, failureCount: uint8 = 0
 
   for item in items:
     try:
@@ -41,8 +40,8 @@ proc deleteItems(items: seq[string]): (int, int) =
 
 proc main() =
   ## Main function of the zrm program.
-  let currentDir = getCurrentDir()
-  let selectedItems = fzfSelection(currentDir)
+  let currentDir: string = getCurrentDir()
+  let selectedItems: seq[string] = fzfSelection(currentDir)
 
   if selectedItems.len > 0:
     stdout.writeLine "Selected items:"
@@ -50,7 +49,7 @@ proc main() =
       stdout.writeLine "→ ", item
 
     stdout.write "\nDo you want to delete these items? (y/n) "
-    let response = readLine(stdin)
+    let response: string = readLine(stdin)
 
     if response.toLowerAscii() == "y":
       let (successCount, failureCount) = deleteItems(selectedItems)
@@ -60,4 +59,5 @@ proc main() =
   else:
     stdout.writeLine "No items selected."
 
-main()
+when isMainModule:
+  main()
