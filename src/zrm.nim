@@ -40,8 +40,9 @@ proc deleteItems(items: seq[string]): (uint8, uint8) =
 
 proc main() =
   ## Main function of the zrm program.
-  let currentDir: string = getCurrentDir()
-  let selectedItems: seq[string] = fzfSelection(currentDir)
+  let
+    currentDir: string = getCurrentDir()
+    selectedItems: seq[string] = fzfSelection(currentDir)
 
   if selectedItems.len > 0:
     stdout.writeLine "Selected items:"
