@@ -1,12 +1,14 @@
 import std/[os, osproc, strutils, strformat]
 
+const FzfCommand: string = "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
+
 proc isFzfInstalled(): bool =
   ## Checks if fzf is installed.
   ## Returns:
   ##   - True if fzf is installed, false otherwise.
   return findExe("fzf") != ""
 
-proc getFilePaths(currentDir: string): seq[string] =
+proc getFilePaths*(currentDir: string): seq[string] =
   ## Collects absolute paths of files and directories in the current directory.
   ## Parameters:
   ##   - currentDir: The directory to list items from.
@@ -23,8 +25,7 @@ proc runFzf(filePaths: seq[string]): seq[string] =
   ##   - filePaths: A sequence of file or directory paths.
   ## Returns:
   ##   - A sequence of selected file or directory paths, or an empty sequence if selection fails.
-  const FuzzyFinderCmd: string = "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
-  let (output, exitCode) = execCmdEx(FuzzyFinderCmd, input = filePaths.join("\n"))
+  let (output, exitCode) = execCmdEx(FzfCommand, input = filePaths.join("\n"))
 
   if exitCode == 0:
     return output.strip().splitLines()
@@ -40,24 +41,25 @@ proc fzfSelection(currentDir: string): seq[string] =
   if not isFzfInstalled():
     stderr.writeLine("Error: fzf is not installed or not found in PATH.")
     return @[]
-  let filePaths = getFilePaths(currentDir)
+  let filePaths: seq[string] = getFilePaths(currentDir)
   return runFzf(filePaths)
 
-proc isCriticalPath(path: string): bool =
+proc isCriticalPath*(path: string): bool =
   ## Checks if the path is critical.
   ## Parameters:
   ##   - path: The path to check.
   ## Returns:
   ##   - True if the path is critical, false otherwise.
-  let absPath: string = path.absolutePath
-  return absPath == getHomeDir() or absPath == getCurrentDir() or absPath == "/"
+  return path == getHomeDir() or path == "/"
 
-proc deletePath(absPath: string): bool =
+proc deletePath*(absPath: string): bool =
   ## Deletes the provided path.
   ## Parameters:
   ##   - absPath: The path to delete.
   ## Returns:
   ##   - True if the deletion was successful, false otherwise.
+  if not fileExists(absPath) and not dirExists(absPath):
+    return false
   try:
     if dirExists(absPath):
       removeDir(absPath)
@@ -67,7 +69,7 @@ proc deletePath(absPath: string): bool =
   except OSError:
     return false
 
-proc deleteItems(selectedPaths: seq[string]): (Natural, Natural) =
+proc deleteItems*(selectedPaths: seq[string]): (Natural, Natural) =
   ## Deletes the provided items and returns a tuple with the count of successful and failed deletions.
   ## Parameters:
   ##   - selectedPaths: A sequence of file or directory paths to delete.
