@@ -1,64 +1,126 @@
 import std/[os, osproc, strutils, strformat]
 
-proc fzfSelection(currentDir: string): seq[string] =
-  ## Selects items in the current directory using fzf.
-  const FuzzyFinderCmd: string =
-    "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
+proc isFzfInstalled(): bool =
+  ## Checks if fzf is installed.
+  ## Returns:
+  ##   - True if fzf is installed, false otherwise.
+  return findExe("fzf") != ""
 
-  # Traverse the directory and add items to the list.
-  var items: seq[string] = @[]
-  for _, path in walkDir(currentDir):
-    items.add(path)
+proc getFilePaths(currentDir: string): seq[string] =
+  ## Collects absolute paths of files and directories in the current directory.
+  ## Parameters:
+  ##   - currentDir: The directory to list items from.
+  ## Returns:
+  ##   - A sequence of absolute file or directory paths.
+  var filePaths: seq[string] = newSeq[string]()
+  for kind, path in walkDir(currentDir):
+    filePaths.add(path.absolutePath)
+  return filePaths
 
-  # Run fzf with the list of items.
-  let (output, exitCode) = execCmdEx(FuzzyFinderCmd, input = items.join("\n"))
+proc runFzf(filePaths: seq[string]): seq[string] =
+  ## Runs fzf with the list of paths.
+  ## Parameters:
+  ##   - filePaths: A sequence of file or directory paths.
+  ## Returns:
+  ##   - A sequence of selected file or directory paths, or an empty sequence if selection fails.
+  const FuzzyFinderCmd: string = "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
+  let (output, exitCode) = execCmdEx(FuzzyFinderCmd, input = filePaths.join("\n"))
 
-  # Return the selected items if fzf was successful.
   if exitCode == 0:
-    result = output.strip().splitLines()
+    return output.strip().splitLines()
   else:
-    result = @[]
+    return @[]
 
-proc deleteItems(items: seq[string]): (uint8, uint8) =
-  ## Deletes the selected items and returns the number of successes and failures.
-  var successCount, failureCount: uint8 = 0
+proc fzfSelection(currentDir: string): seq[string] =
+  ## Selects files or directories in the current directory using fzf.
+  ## Parameters:
+  ##   - currentDir: The directory to list items from.
+  ## Returns:
+  ##   - A sequence of selected file or directory paths, or an empty sequence if selection fails.
+  if not isFzfInstalled():
+    stderr.writeLine("Error: fzf is not installed or not found in PATH.")
+    return @[]
+  let filePaths = getFilePaths(currentDir)
+  return runFzf(filePaths)
 
-  for item in items:
-    try:
-      if dirExists(item):
-        removeDir(item)
-        stdout.writeLine "Directory deleted: ", item
-      else:
-        removeFile(item)
-        stdout.writeLine "File deleted: ", item
-      successCount += 1
-    except OSError:
-      stderr.writeLine "Error deleting item: ", item
-      failureCount += 1
+proc isCriticalPath(path: string): bool =
+  ## Checks if the path is critical.
+  ## Parameters:
+  ##   - path: The path to check.
+  ## Returns:
+  ##   - True if the path is critical, false otherwise.
+  let absPath: string = path.absolutePath
+  return absPath == getHomeDir() or absPath == getCurrentDir() or absPath == "/"
 
-  result = (successCount, failureCount)
+proc deletePath(absPath: string): bool =
+  ## Deletes the provided path.
+  ## Parameters:
+  ##   - absPath: The path to delete.
+  ## Returns:
+  ##   - True if the deletion was successful, false otherwise.
+  try:
+    if dirExists(absPath):
+      removeDir(absPath)
+    else:
+      removeFile(absPath)
+    return true
+  except OSError:
+    return false
+
+proc deleteItems(selectedPaths: seq[string]): (Natural, Natural) =
+  ## Deletes the provided items and returns a tuple with the count of successful and failed deletions.
+  ## Parameters:
+  ##   - selectedPaths: A sequence of file or directory paths to delete.
+  ## Returns:
+  ##   - A tuple (successCount, failureCount) indicating the number of successful and failed deletions.
+  var successCount: Natural = 0
+  var failureCount: Natural = 0
+
+  for path in selectedPaths:
+    if isCriticalPath(path):
+      stderr.writeLine(fmt"Error: Attempt to delete critical path: {path}")
+      inc(failureCount)
+      continue
+    if deletePath(path):
+      stdout.writeLine(fmt"Deleted: {path}")
+      inc(successCount)
+    else:
+      stderr.writeLine(fmt"Error deleting item: {path}")
+      inc(failureCount)
+
+  return (successCount, failureCount)
+
+proc confirmDeletion(): bool =
+  ## Asks the user for confirmation before deletion.
+  ## Returns:
+  ##   - True if the user confirms, false otherwise.
+  stdout.write("\nDo you want to delete these items? (y/n) ")
+  let response: string = readLine(stdin).toLowerAscii()
+  return response == "y"
+
+proc displaySelectedItems(selectedPaths: seq[string]) =
+  ## Displays the selected items to the user.
+  ## Parameters:
+  ##   - selectedPaths: A sequence of file or directory paths to display.
+  stdout.writeLine("Selected items:")
+  for path in selectedPaths:
+    stdout.writeLine(fmt"→ {path}")
 
 proc main() =
-  ## Main function of the zrm program.
-  let
-    currentDir: string = getCurrentDir()
-    selectedItems: seq[string] = fzfSelection(currentDir)
+  ## Main function of the zrm program. Lists items in the current directory,
+  ## allows selection via fzf, and deletes selected items after user confirmation.
+  let currentDir: string = getCurrentDir()
+  let selectedPaths: seq[string] = fzfSelection(currentDir)
 
-  if selectedItems.len > 0:
-    stdout.writeLine "Selected items:"
-    for item in selectedItems:
-      stdout.writeLine "→ ", item
-
-    stdout.write "\nDo you want to delete these items? (y/n) "
-    let response: string = readLine(stdin)
-
-    if response.toLowerAscii() == "y":
-      let (successCount, failureCount) = deleteItems(selectedItems)
-      stdout.writeLine fmt"Deletion completed: {successCount} successful, {failureCount} failed."
+  if selectedPaths.len > 0:
+    displaySelectedItems(selectedPaths)
+    if confirmDeletion():
+      let (successCount, failureCount) = deleteItems(selectedPaths)
+      stdout.writeLine(fmt"Deletion completed: {successCount} successful, {failureCount} failed.")
     else:
-      stdout.writeLine "Items not deleted."
+      stdout.writeLine("Items not deleted.")
   else:
-    stdout.writeLine "No items selected."
+    stdout.writeLine("No items selected.")
 
 when isMainModule:
   main()

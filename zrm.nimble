@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.0"
+version       = "0.3.0"
 author        = "Gabriel Capilla"
 description   = "Easily delete files from the terminal using fzf"
 license       = "MIT"
@@ -10,4 +10,4 @@ bin           = @["zrm"]
 
 # Dependencies
 
-requires "nim >= 2.2.0"
+requires "nim >= 2.0.8"
