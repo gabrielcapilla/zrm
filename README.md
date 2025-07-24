@@ -19,21 +19,20 @@
 ## Installation
 
 ### Install using Nimble
-
-    ```bash
-    nimble install https://github.com/gabrielcapilla/zrm.git
-    ```
+```bash
+nimble install https://github.com/gabrielcapilla/zrm.git
+```
 
 ### Build
 
 1.  **Clone the repository:**
-    ```sh
+    ```bash
     git clone https://github.com/gabrielcapilla/zrm.git
     cd zrm
     ```
 
 2.  **Install dependencies and build the project using Nimble:**
-    ```sh
+    ```bash
     nimble install
     ```
 
@@ -41,9 +40,9 @@
 
 Simply run `zrm` in any directory:
 
-    ```sh
-    zrm
-    ```
+```bash
+zrm
+```
 
 This will open an `fzf` window listing all files and subdirectories in the current location.
 
@@ -56,9 +55,9 @@ This will open an `fzf` window listing all files and subdirectories in the curre
 
 To remove `zrm` from your system, use Nimble:
 
-    ```sh
-    nimble uninstall zrm
-    ```
+```bash
+nimble uninstall zrm
+```
 
 ---
 
