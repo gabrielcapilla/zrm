@@ -1,4 +1,5 @@
-nimble.develop
-nimble.paths
-.gitignore
 zrm
+test_zrm
+nimble.paths
+nimble.develop
+config.nims
