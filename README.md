@@ -16,7 +16,15 @@
 -   [Nim](https://nim-lang.org/install.html) (version 2.0.8 or higher)
 -   [fzf](https://github.com/junegunn/fzf#installation)
 
-## Build
+## Installation
+
+### Install using Nimble
+
+    ```bash
+    nimble install https://github.com/gabrielcapilla/zrm.git
+    ```
+
+### Build
 
 1.  **Clone the repository:**
     ```sh
@@ -24,27 +32,18 @@
     cd zrm
     ```
 
-2.  **Build the binary:**
-    Use Nimble to build the project. The following command creates an optimized release binary in the current directory.
+2.  **Install dependencies and build the project using Nimble:**
     ```sh
-    nimble build
+    nimble install
     ```
-
-## Installation
-
-Install `zrm` using Nimble. This will place the binary in your Nimble bin directory (`~/.nimble/bin`), which should be in your system's `PATH`.
-
-```sh
-nimble install
-```
 
 ## Usage
 
 Simply run `zrm` in any directory:
 
-```sh
-zrm
-```
+    ```sh
+    zrm
+    ```
 
 This will open an `fzf` window listing all files and subdirectories in the current location.
 
@@ -57,9 +56,9 @@ This will open an `fzf` window listing all files and subdirectories in the curre
 
 To remove `zrm` from your system, use Nimble:
 
-```sh
-nimble uninstall zrm
-```
+    ```sh
+    nimble uninstall zrm
+    ```
 
 ---
 
