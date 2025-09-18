@@ -1,5 +1,55 @@
+# Log files
+*.log
+logs/
+src/logs/
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# Nim binary
 zrm
-test_zrm
+tests/test_zrm
+
+# Nim
+config.nims
 nimble.paths
 nimble.develop
-config.nims
+
+# Nim cache
+.nimcache/
+nimcache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+build/
+dist/
+*.o
+*.a
+
+# Dolphin KDE
+.directory
+
+# Exceptions
+*.json
