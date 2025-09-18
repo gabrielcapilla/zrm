@@ -63,7 +63,8 @@ suite "zrm tests":
       writeFile(itemToDelete1, "content")
       createDir(itemToDelete2)
 
-      let pathsToDelete: seq[string] = @[itemToDelete1, itemToDelete2, nonExistentItem, criticalPath]
+      let pathsToDelete: seq[string] =
+        @[itemToDelete1, itemToDelete2, nonExistentItem, criticalPath]
       let (successCount, failureCount) = deleteItems(pathsToDelete)
 
       # Expect 2 successful deletions (item1, itemToDelete2)
