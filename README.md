@@ -13,7 +13,7 @@
 
 ## Prerequisites
 
--   [Nim](https://nim-lang.org/install.html) (version 2.0.8 or higher)
+-   [Nim](https://nim-lang.org/install.html) (version 2.2.4 or higher)
 -   [fzf](https://github.com/junegunn/fzf#installation)
 
 ## Installation
