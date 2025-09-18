@@ -1,6 +1,7 @@
 import std/[os, osproc, strutils, strformat]
 
-const FzfCommand: string = "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
+const FzfCommand: string =
+  "fzf --multi --layout=reverse --header='Use <TAB> to select more than one item'"
 
 proc isFzfInstalled(): bool =
   ## Checks if fzf is installed.
@@ -44,7 +45,7 @@ proc fzfSelection(currentDir: string): seq[string] =
   let filePaths: seq[string] = getFilePaths(currentDir)
   return runFzf(filePaths)
 
-proc isCriticalPath*(path: string): bool =
+func isCriticalPath*(path: string): bool =
   ## Checks if the path is critical.
   ## Parameters:
   ##   - path: The path to check.
@@ -118,7 +119,9 @@ proc main() =
     displaySelectedItems(selectedPaths)
     if confirmDeletion():
       let (successCount, failureCount) = deleteItems(selectedPaths)
-      stdout.writeLine(fmt"Deletion completed: {successCount} successful, {failureCount} failed.")
+      stdout.writeLine(
+        fmt"Deletion completed: {successCount} successful, {failureCount} failed."
+      )
     else:
       stdout.writeLine("Items not deleted.")
   else:
