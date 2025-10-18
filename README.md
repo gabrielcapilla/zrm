@@ -1,6 +1,6 @@
 # zrm
 
-![Static Badge](https://img.shields.io/badge/GitHub-%E2%9C%93-green?link=https%3A%2F%2Fgithub.com%2Fgabrielcapilla%2Fzrm)
+![Static Badge](https://img.shields.io/badge/GitHub-%E2%9C%93-green?style=plastic&logo=github&link=https%3A%2F%2Fgithub.com%2Fgabrielcapilla%2Fzrm)
 ![Static Badge](https://img.shields.io/badge/Radicle-%E2%9C%93-blue?link=https%3A%2F%2Fapp.radicle.xyz%2Fnodes%2Fash.radicle.garden%2Frad%3Az3F4HRx3HCcdh9z9TzjMGBHtiJg9t)
 
 ---
